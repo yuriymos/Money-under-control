@@ -1,8 +1,10 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Stack;
 
 /**
  * The Main window class <b>abc</b> è <b>abc</b>.
@@ -14,7 +16,9 @@ public class UserInterface extends JFrame implements ActionListener {
 
     private AddWindow addWindow;
 
-    private DataString dataString;
+    private JTable mainTable;
+
+    private DefaultTableModel tableModel;
 
     private DataArray dataArray;
 
@@ -29,9 +33,9 @@ public class UserInterface extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.createMenu();
 
-        //dataArray.parseXML();
+        //dataArray.readFromXMLFile();
 
-        JTable mainTable = this.createMainTable();
+        this.createMainTable();
 
         // create a panel for four buttons
         JPanel panel = new JPanel();
@@ -73,25 +77,32 @@ public class UserInterface extends JFrame implements ActionListener {
     /**
      * This is a private method to create a main table in the main window
      */
-    private JTable createMainTable() {
+    private void createMainTable() {
         // This are titles for the main table.
-        String[] columnNames = {"Number", "Date", "Category", "Note", "Money"}; // Column names
+        String[] columnNames = {"N-r", "Date", "Category", "Note", "Money"}; // Column names
         // This is data for the main table.
-
         dataArray = new DataArray();
+        tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(columnNames);
+        // add all data from XML-file
+        dataArray.readFromXMLFile();
 
-        // get String [] [] from dataArray-object to fill the main table
-        String [] [] dataForMainTable = dataArray.getDataToMainTable();
-
-        JTable mainTable = new JTable(dataForMainTable, columnNames);
+        for (int index = 0; index < dataArray.howManyElementsInDataArray(); index++) {
+            tableModel.addRow(dataArray.getFormatDataString(index));
+        }
+        // set this table model to the main window
+        mainTable = new JTable(tableModel);
         // to set up data in a cell to the center
         DefaultTableCellRenderer r = (DefaultTableCellRenderer) mainTable.getDefaultRenderer(String.class);
         r.setHorizontalAlignment(JLabel.CENTER);
         r.setVerticalAlignment(JLabel.CENTER);
         // set the first column less than 60 pixels
-        mainTable.getColumnModel().getColumn(0).setMaxWidth(60);
-        mainTable.setRowSelectionAllowed(true);
-        return mainTable;
+        mainTable.getColumnModel().getColumn(0).setMaxWidth(30);
+        mainTable.getColumnModel().getColumn(1).setMinWidth(130);
+        mainTable.setSelectionForeground(Color.red); // the chosen row becomes red
+        mainTable.setShowHorizontalLines(false);
+        mainTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //return mainTable;
     }
 
     /**
@@ -102,24 +113,20 @@ public class UserInterface extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent ae){
         if(ae.getActionCommand().equals("Exit")){
             System.exit(0);
-        }
-        else if(ae.getActionCommand().equals("Add Note")){
+        } else if(ae.getActionCommand().equals("Add Note")){
             // create a window to add data
             addWindow = new AddWindow();
             // if the button Ok was pressed in AddWindow
             // we create new dataString-object and get data
             if (addWindow.isPressedOk()){
-                dataString = new DataString();
-                dataString = addWindow.sendData();
-                dataArray.addDataString(dataString);
-                dataArray.getDataToMainTable();
-                System.out.println(dataArray.howManyElementsInDataArray().toString());
+                dataArray.addDataString(addWindow.sendData());
+                Integer i = dataArray.howManyElementsInDataArray();
+                tableModel.addRow(dataArray.getFormatDataString(i-1));
+                System.out.println(i.toString());
             }
-        }
-        else if(ae.getActionCommand().equals("Delete Note")){
+        } else if (ae.getActionCommand().equals("Delete Note")){
             System.out.println("Delete Note");
-        }
-        else if(ae.getActionCommand().equals("Report")){
+        } else if(ae.getActionCommand().equals("Report")){
             System.out.println("Report");
         }
     }

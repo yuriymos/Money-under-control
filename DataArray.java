@@ -1,42 +1,49 @@
-import java.util.Collections;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * Created by Y on 17.08.2017.
  */
+
 public class DataArray {
 
-    private Vector vector;
+    private ArrayList arrayList = new ArrayList< String [] >();;
 
     public DataArray() {
-        vector = new Vector< DataString >();
     }
 
-    public void addDataString(DataString ds) {
-        vector.addElement(ds);
+    private void sortByDate() {
+
     }
 
-    public void parseXML() {
-        // read file if it is
-        // else vector = null;
+    public String[] getFormatDataString(Integer index) {
+        String [] unformatedResult = new String[6]; // magic number :)
+        unformatedResult = (String [])arrayList.get(index);
+        String [] formatedResult = new String[5]; // magic number :)
+        Integer temp = index + 1;
+        formatedResult[0] = temp.toString();
+        formatedResult[1] = unformatedResult[0] + " " + unformatedResult[1] + " " +
+                unformatedResult[2];
+        formatedResult[2] = unformatedResult[3];
+        formatedResult[3] = unformatedResult[4];
+        formatedResult[4] = unformatedResult[5];
+        return formatedResult;
+    }
+
+    public void addDataString(String[] ds) {
+        arrayList.add(ds);
+    }
+
+    public void readFromXMLFile() {
+        this.addDataString(new String[]{"25", "November", "2017", "Food", "none", "1597"});
+        this.addDataString(new String[]{"25", "May", "2017", "Car", "none", "5097"});
+        this.addDataString(new String[]{"5", "February", "2015", "Car", "none", "97"});
+        this.addDataString(new String[]{"7", "June", "2016", "Car", "none", "5097"});
+        this.addDataString(new String[]{"25", "May", "2018", "Other", "none", "557"});
+        this.sortByDate();
     }
 
     public Integer howManyElementsInDataArray() {
-        return vector.size();
-    }
-
-    public String [] [] getDataToMainTable() {
-       String [] [] temp;
-        if(vector.size() == 0) {
-            temp  = new String[][] {{ "1", "no data", "no data", "no data", "no data"}};
-        }
-        else {
-            temp = new String[][]{{"1", "01/08/2017", "Food", "Note", "3434"},
-                    {"2", "03/08/2017", "Adventures", "Note", "434"},
-                    {"300", "22/09/2017", "Rent", "Note", "1034"}};
-        }
-        return temp;
-
+        return arrayList.size();
     }
 
 }

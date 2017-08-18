@@ -147,17 +147,17 @@ public class AddWindow  extends JDialog implements ActionListener {
 
     /**
      * This method needs to send entered data
-     *
-     * @param
+     * @return String []
      */
-    public DataString sendData() {
-        DataString dString = new DataString(
+    public String [] sendData() {
+
+        String [] dString = new String[]{
                 day.getSelectedItem().toString(),
                 month.getSelectedItem().toString(),
                 year.getSelectedItem().toString(),
                 categoriesComboBox.getSelectedItem().toString(),
                 textFieldForNote.getText(),
-                moneyComboBox.getSelectedItem().toString());
+                moneyComboBox.getSelectedItem().toString()};
         return dString;
     }
 
