@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +13,10 @@ import java.awt.event.ActionListener;
 public class UserInterface extends JFrame implements ActionListener {
 
     private AddWindow addWindow;
+
     private DataString dataString;
+
+    private DataArray dataArray;
 
     /**
      * Constructor - creating a new main window
@@ -23,9 +27,13 @@ public class UserInterface extends JFrame implements ActionListener {
         this.setResizable(false);
         this.setLocationRelativeTo(null); // set the main window on the center
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         this.createMenu();
 
+        //dataArray.parseXML();
+
+        JTable mainTable = this.createMainTable();
+
+        // create a panel for four buttons
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(2, 2)); // 2 rows and 2 column
         for(String buttonName : new String[] {"Add Note", "Delete Note", "Report", "Exit"}) {
@@ -36,7 +44,7 @@ public class UserInterface extends JFrame implements ActionListener {
 
         // for JFrame, JWindow, JDialog BorderLayout manager is by default
         Container container = getContentPane();
-        container.add(new JButton("Table"));
+        container.add(new JScrollPane(mainTable));
         container.add(panel, BorderLayout.SOUTH);
 
         this.setVisible(true);
@@ -63,6 +71,30 @@ public class UserInterface extends JFrame implements ActionListener {
     }
 
     /**
+     * This is a private method to create a main table in the main window
+     */
+    private JTable createMainTable() {
+        // This are titles for the main table.
+        String[] columnNames = {"Number", "Date", "Category", "Note", "Money"}; // Column names
+        // This is data for the main table.
+
+        dataArray = new DataArray();
+
+        // get String [] [] from dataArray-object to fill the main table
+        String [] [] dataForMainTable = dataArray.getDataToMainTable();
+
+        JTable mainTable = new JTable(dataForMainTable, columnNames);
+        // to set up data in a cell to the center
+        DefaultTableCellRenderer r = (DefaultTableCellRenderer) mainTable.getDefaultRenderer(String.class);
+        r.setHorizontalAlignment(JLabel.CENTER);
+        r.setVerticalAlignment(JLabel.CENTER);
+        // set the first column less than 60 pixels
+        mainTable.getColumnModel().getColumn(0).setMaxWidth(60);
+        mainTable.setRowSelectionAllowed(true);
+        return mainTable;
+    }
+
+    /**
      * This is an overloaded method
      * @param ae is an object-event
      */
@@ -74,17 +106,25 @@ public class UserInterface extends JFrame implements ActionListener {
         else if(ae.getActionCommand().equals("Add Note")){
             // create a window to add data
             addWindow = new AddWindow();
-            // if the button Ok wass pressed in AddWindow
+            // if the button Ok was pressed in AddWindow
             // we create new dataString-object and get data
             if (addWindow.isPressedOk()){
                 dataString = new DataString();
                 dataString = addWindow.sendData();
-
-                System.out.println(dataString.getDate().toString());
-                System.out.println(dataString.getCategory());
-                System.out.println(dataString.getNote());
-                System.out.println(dataString.getMoney());
+                dataArray.addDataString(dataString);
+                dataArray.getDataToMainTable();
+                System.out.println(dataArray.howManyElementsInDataArray().toString());
             }
+        }
+        else if(ae.getActionCommand().equals("Delete Note")){
+            System.out.println("Delete Note");
+        }
+        else if(ae.getActionCommand().equals("Report")){
+            System.out.println("Report");
         }
     }
 }
+
+
+
+

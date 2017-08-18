@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 /**
  * Created by Y on 12.08.2017.
@@ -152,8 +151,10 @@ public class AddWindow  extends JDialog implements ActionListener {
      * @param
      */
     public DataString sendData() {
-        DataString dString = new DataString();
-        dString.setData(new Date(159),
+        DataString dString = new DataString(
+                day.getSelectedItem().toString(),
+                month.getSelectedItem().toString(),
+                year.getSelectedItem().toString(),
                 categoriesComboBox.getSelectedItem().toString(),
                 textFieldForNote.getText(),
                 moneyComboBox.getSelectedItem().toString());
