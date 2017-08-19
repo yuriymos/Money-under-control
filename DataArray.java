@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Y on 17.08.2017.
@@ -6,39 +8,44 @@ import java.util.ArrayList;
 
 public class DataArray {
 
-    private ArrayList arrayList = new ArrayList< String [] >();;
+    private ArrayList arrayList = new ArrayList< DataString >();
 
     public DataArray() {
     }
 
-    private void sortByDate() {
-
+    public void sortByDate() {
+        Collections.sort(arrayList, new dataStringComp());
     }
 
     public String[] getFormatDataString(Integer index) {
-        String [] unformatedResult = new String[6]; // magic number :)
-        unformatedResult = (String [])arrayList.get(index);
+        DataString unformatedResult = new DataString();
+        unformatedResult = (DataString)arrayList.get(index);
         String [] formatedResult = new String[5]; // magic number :)
         Integer temp = index + 1;
         formatedResult[0] = temp.toString();
-        formatedResult[1] = unformatedResult[0] + " " + unformatedResult[1] + " " +
-                unformatedResult[2];
-        formatedResult[2] = unformatedResult[3];
-        formatedResult[3] = unformatedResult[4];
-        formatedResult[4] = unformatedResult[5];
+        DateFormat df = new SimpleDateFormat("dd MMMM yyyy",  Locale.ENGLISH);
+        formatedResult[1] =  df.format(unformatedResult.getDate()).toString();
+        formatedResult[2] = unformatedResult.getCategory();
+        formatedResult[3] = unformatedResult.getNote();
+        formatedResult[4] = unformatedResult.getMoney();
         return formatedResult;
     }
 
-    public void addDataString(String[] ds) {
+    public void addDataString(DataString ds) {
         arrayList.add(ds);
     }
 
+    public void deleteDataString(int index) {
+        System.out.println("deleteDataString()");
+        arrayList.remove(index);
+    }
+
     public void readFromXMLFile() {
-        this.addDataString(new String[]{"25", "November", "2017", "Food", "none", "1597"});
-        this.addDataString(new String[]{"25", "May", "2017", "Car", "none", "5097"});
-        this.addDataString(new String[]{"5", "February", "2015", "Car", "none", "97"});
-        this.addDataString(new String[]{"7", "June", "2016", "Car", "none", "5097"});
-        this.addDataString(new String[]{"25", "May", "2018", "Other", "none", "557"});
+        this.addDataString(new DataString(new Date(System.currentTimeMillis()), "Food", "none", "1597"));
+        this.addDataString(new DataString(new Date(2503065604631L), "Clothes", "none", "507"));
+        this.addDataString(new DataString(new Date(150306604631L), "Wife", "none", "7597"));
+        this.addDataString(new DataString(new Date(1103065604631L), "Adventures", "none", "607"));
+        this.addDataString(new DataString(new Date(1203065604631L), "Car", "none", "6778"));
         this.sortByDate();
     }
 
@@ -46,4 +53,17 @@ public class DataArray {
         return arrayList.size();
     }
 
+    public void testIt() {
+        for (int index = 0; index < arrayList.size(); index++) {
+            DataString temp = (DataString)arrayList.get(index);
+            temp.showToConcole();
+        }
+    }
+
+    class dataStringComp implements Comparator<DataString>{
+        @Override
+        public int compare(DataString ds1, DataString ds2) {
+            return ds1.getDate().compareTo(ds2.getDate());
+        }
+    }
 }

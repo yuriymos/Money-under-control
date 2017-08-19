@@ -2,6 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Y on 12.08.2017.
@@ -149,17 +154,19 @@ public class AddWindow  extends JDialog implements ActionListener {
      * This method needs to send entered data
      * @return String []
      */
-    public String [] sendData() {
-
-        String [] dString = new String[]{
-                day.getSelectedItem().toString(),
-                month.getSelectedItem().toString(),
-                year.getSelectedItem().toString(),
+    public DataString sendData() throws ParseException {
+        //String string = "January 2, 2010";
+        String string = new String(month.getSelectedItem().toString() + " " +
+                day.getSelectedItem().toString() + ", " + year.getSelectedItem().toString());
+        DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+        Date date = format.parse(string);
+        DataString dString = new DataString(date,
                 categoriesComboBox.getSelectedItem().toString(),
                 textFieldForNote.getText(),
-                moneyComboBox.getSelectedItem().toString()};
+                moneyComboBox.getSelectedItem().toString());
         return dString;
     }
+
 
     public boolean isPressedOk() {
         return buttonOkPressed;

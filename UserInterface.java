@@ -4,6 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.Stack;
 
 /**
@@ -86,7 +87,6 @@ public class UserInterface extends JFrame implements ActionListener {
         tableModel.setColumnIdentifiers(columnNames);
         // add all data from XML-file
         dataArray.readFromXMLFile();
-
         for (int index = 0; index < dataArray.howManyElementsInDataArray(); index++) {
             tableModel.addRow(dataArray.getFormatDataString(index));
         }
@@ -102,7 +102,6 @@ public class UserInterface extends JFrame implements ActionListener {
         mainTable.setSelectionForeground(Color.red); // the chosen row becomes red
         mainTable.setShowHorizontalLines(false);
         mainTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        //return mainTable;
     }
 
     /**
@@ -119,13 +118,29 @@ public class UserInterface extends JFrame implements ActionListener {
             // if the button Ok was pressed in AddWindow
             // we create new dataString-object and get data
             if (addWindow.isPressedOk()){
-                dataArray.addDataString(addWindow.sendData());
+                try {
+                    dataArray.addDataString(addWindow.sendData());
+                }
+                catch (ParseException pe) {
+
+                }
                 Integer i = dataArray.howManyElementsInDataArray();
                 tableModel.addRow(dataArray.getFormatDataString(i-1));
                 System.out.println(i.toString());
             }
         } else if (ae.getActionCommand().equals("Delete Note")){
             System.out.println("Delete Note");
+            int rowIndex = mainTable.getSelectedRow();
+            System.out.println(String.valueOf(rowIndex));
+            // if rowIndex == -1 than there is no elements
+            if(rowIndex != -1) {
+                tableModel.removeRow(rowIndex);
+                dataArray.deleteDataString(rowIndex);
+            }
+            System.out.println(dataArray.howManyElementsInDataArray().toString());
+            // to test it
+            dataArray.testIt();
+
         } else if(ae.getActionCommand().equals("Report")){
             System.out.println("Report");
         }
