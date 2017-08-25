@@ -1,9 +1,11 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.stream.XMLStreamException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Stack;
 
@@ -31,10 +33,9 @@ public class UserInterface extends JFrame implements ActionListener {
         this.setSize(400, 400);
         this.setResizable(false);
         this.setLocationRelativeTo(null); // set the main window on the center
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.createMenu();
+        this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        //dataArray.readFromXMLFile();
+        this.createMenu();
 
         this.createMainTable();
 
@@ -86,7 +87,14 @@ public class UserInterface extends JFrame implements ActionListener {
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(columnNames);
         // add all data from XML-file
-        dataArray.readFromXMLFile();
+        try {
+            dataArray.readFromXMLFile();
+        }
+        catch (ParseException | XMLStreamException ex)
+        {
+
+        }
+
         for (int index = 0; index < dataArray.howManyElementsInDataArray(); index++) {
             tableModel.addRow(dataArray.getFormatDataString(index));
         }
@@ -111,6 +119,12 @@ public class UserInterface extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae){
         if(ae.getActionCommand().equals("Exit")){
+            System.out.println("Exit");
+            try {
+                dataArray.writeToXMLFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             System.exit(0);
         } else if(ae.getActionCommand().equals("Add Note")){
             // create a window to add data
@@ -130,16 +144,14 @@ public class UserInterface extends JFrame implements ActionListener {
             }
         } else if (ae.getActionCommand().equals("Delete Note")){
             System.out.println("Delete Note");
+            // this row index was chosen by an user
             int rowIndex = mainTable.getSelectedRow();
-            System.out.println(String.valueOf(rowIndex));
+            //System.out.println(String.valueOf(rowIndex));
             // if rowIndex == -1 than there is no elements
             if(rowIndex != -1) {
                 tableModel.removeRow(rowIndex);
                 dataArray.deleteDataString(rowIndex);
             }
-            System.out.println(dataArray.howManyElementsInDataArray().toString());
-            // to test it
-            dataArray.testIt();
 
         } else if(ae.getActionCommand().equals("Report")){
             System.out.println("Report");

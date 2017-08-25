@@ -13,8 +13,8 @@ import java.util.Locale;
  */
 public class AddWindow  extends JDialog implements ActionListener {
 
-    private final static Integer MAX_MONEY = 10000;
-    private final static Integer SINCE_YEAR = 2015;
+    private final static Integer MAX_MONEY = 20000;
+    private final static Integer SINCE_YEAR = 2000;
 
     // arrays with data to form any date
     private String[] dayString;
@@ -102,12 +102,25 @@ public class AddWindow  extends JDialog implements ActionListener {
         for (String labelTitle : new String[]{"Day:", "Month:", "Year:"}) {
             gridForDate.add(new JLabel(labelTitle, JLabel.CENTER));
         }
-        //int index = 0;
         day = new JComboBox(dayString);
-        gridForDate.add(day);
         month = new JComboBox(monthsString);
-        gridForDate.add(month);
         year = new JComboBox(yearString);
+
+        // set current date to the window
+        Date currentDate = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
+        SimpleDateFormat sdfMonth = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+        SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+        int currentDay = Integer.parseInt(sdfDay.format(currentDate));
+        String currentMonth = sdfMonth.format(currentDate);
+        int currentYear = Integer.parseInt(sdfYear.format(currentDate));
+
+        day.setSelectedItem((String.valueOf(currentDay)));
+        month.setSelectedItem(currentMonth);
+        year.setSelectedItem((String.valueOf(currentYear)));
+
+        gridForDate.add(day);
+        gridForDate.add(month);
         gridForDate.add(year);
     }
 
@@ -118,10 +131,10 @@ public class AddWindow  extends JDialog implements ActionListener {
                         BorderFactory.createEtchedBorder(),
                         "Enter description of your spendings"),
                 BorderFactory.createEmptyBorder(5, 10, 10, 10)));
-        String[] someCategories = {"Food", "Clothes", "Wife", "Rent", "Adventures", "Car", "Children", "Other"};
+        String[] someCategories = {"Food", "Clothes", "Wife", "Rent", "Adventures", "Car", "Children", "Public transport", "Other"};
         categoriesComboBox = new JComboBox(someCategories);
         gridForBoxes.add(categoriesComboBox);
-        textFieldForNote = new JTextField("Note", JTextField.CENTER);
+        textFieldForNote = new JTextField("note", JTextField.CENTER);
         gridForBoxes.add(textFieldForNote);
     }
 

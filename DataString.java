@@ -4,7 +4,7 @@ import java.util.Date;
  * Created by Y on 18.08.2017.
  */
 public class DataString {
-    private Date data;
+    private Date date;
     private String category;
     private String note;
     private String money;
@@ -12,19 +12,21 @@ public class DataString {
     public DataString() {
 
     }
-    public DataString(Date data, String category, String note, String money) {
-        this.data = data;
+    public DataString(Date date, String category, String note, String money) {
+        this.date = date;
         this.category = category;
         this.note = note;
         this.money = money;
     }
 
-    public Date getDate() { return data; }
+    public void setDate(Date date) { this.date = date; }
+    public void setCategory(String category) { this.category = category; }
+    public void setNote(String note) { this.note = note; }
+    public void setMoney(String money) { this.money = money; }
+
+    public Date getDate() { return date; }
     public String getCategory() { return category; }
     public String getNote() { return note; }
     public String getMoney() { return money; }
 
-    public void showToConcole() {
-        System.out.println(data.toString() + " " + category + " " + note + " " + money);
-    }
 }
