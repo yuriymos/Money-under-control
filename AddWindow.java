@@ -10,10 +10,12 @@ import java.util.Locale;
 
 /**
  * Created by Y on 12.08.2017.
+ * This class create a window to add information about spending money
  */
 public class AddWindow  extends JDialog implements ActionListener {
-
+    // value for set up maximum amount of money you could enter
     private final static Integer MAX_MONEY = 20000;
+    // value for year
     private final static Integer SINCE_YEAR = 2000;
 
     // arrays with data to form any date
@@ -32,10 +34,11 @@ public class AddWindow  extends JDialog implements ActionListener {
     private JComboBox moneyComboBox, categoriesComboBox;
     private JTextField textFieldForNote;
 
+    // for information about the button OK, it was pressed or not.
     private boolean buttonOkPressed;
 
     /**
-     * Constructor - creating a new main window
+     * Constructor - creating a new window.
      */
     public AddWindow() {
         this.setResizable(false);
@@ -63,12 +66,16 @@ public class AddWindow  extends JDialog implements ActionListener {
         container.add(flow, BorderLayout.SOUTH);
         // set an optimal size of the window
         this.pack();
-        this.setLocationRelativeTo(null); // set the main window on the center
+        // set the main window on the center
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
+    /**
+     * The createDataForDate method is private, it needs to create data for date
+     */
     private void createDataForDate() {
-        dayString = new String[30];
+        dayString = new String[31]; // where 31 is maximum days possible in a month
         for (Integer value = 1; value <= dayString.length; value++) {
             dayString[value - 1] = value.toString();
         }
@@ -91,6 +98,10 @@ public class AddWindow  extends JDialog implements ActionListener {
         }
     }
 
+    /**
+     * The createPanelForDate method is private,
+     * it needs to add data about date
+     */
     private void createPanelForDate() {
         gridForDate = new JPanel(new GridLayout(2, 3, 5, 0));
         gridForDate.setBorder(BorderFactory.createCompoundBorder(
@@ -106,11 +117,24 @@ public class AddWindow  extends JDialog implements ActionListener {
         month = new JComboBox(monthsString);
         year = new JComboBox(yearString);
 
-        // set current date to the window
+        this.setCurrentDate();
+
+        gridForDate.add(day);
+        gridForDate.add(month);
+        gridForDate.add(year);
+    }
+
+    /**
+     * The setCurrentDate method is private,
+     * it needs to set current data to the add window
+     */
+    private void setCurrentDate() {
         Date currentDate = new Date(System.currentTimeMillis());
+
         SimpleDateFormat sdfDay = new SimpleDateFormat("dd");
         SimpleDateFormat sdfMonth = new SimpleDateFormat("MMMM", Locale.ENGLISH);
         SimpleDateFormat sdfYear = new SimpleDateFormat("yyyy");
+
         int currentDay = Integer.parseInt(sdfDay.format(currentDate));
         String currentMonth = sdfMonth.format(currentDate);
         int currentYear = Integer.parseInt(sdfYear.format(currentDate));
@@ -118,12 +142,12 @@ public class AddWindow  extends JDialog implements ActionListener {
         day.setSelectedItem((String.valueOf(currentDay)));
         month.setSelectedItem(currentMonth);
         year.setSelectedItem((String.valueOf(currentYear)));
-
-        gridForDate.add(day);
-        gridForDate.add(month);
-        gridForDate.add(year);
     }
 
+    /**
+     * The createPanelForLabelsAndComboBoxes method is private,
+     * it needs to set current data to the add window
+     */
     private void createPanelForLabelsAndComboBoxes() {
         gridForBoxes = new JPanel(new GridLayout(1, 0, 5, 0));
         gridForBoxes.setBorder(BorderFactory.createCompoundBorder(
@@ -131,13 +155,21 @@ public class AddWindow  extends JDialog implements ActionListener {
                         BorderFactory.createEtchedBorder(),
                         "Enter description of your spendings"),
                 BorderFactory.createEmptyBorder(5, 10, 10, 10)));
-        String[] someCategories = {"Food", "Clothes", "Wife", "Rent", "Adventures", "Car", "Children", "Public transport", "Other"};
+        // these are possible categories, you could add more
+        String[] someCategories = {"Food", "Clothes", "Wife", "Rent",
+                "Adventures", "Car", "Children", "Public transport", "Other"};
         categoriesComboBox = new JComboBox(someCategories);
         gridForBoxes.add(categoriesComboBox);
         textFieldForNote = new JTextField("note", JTextField.CENTER);
         gridForBoxes.add(textFieldForNote);
     }
 
+    /**
+     * The createPanelForMoney method is private,
+     * it needs to add data about your money spending
+     * You should chose one number from combo box
+     * from 0 to MAX_MONEY
+     */
     private void createPanelForMoney() {
         gridForMoney = new JPanel(new GridLayout(1, 2, 5, 0));
         gridForMoney.setBorder(BorderFactory.createCompoundBorder(
@@ -145,7 +177,6 @@ public class AddWindow  extends JDialog implements ActionListener {
                         BorderFactory.createEtchedBorder(),
                         "How much money have you spent?"),
                 BorderFactory.createEmptyBorder(5, 10, 10, 10)));
-
         String[] moneyString = new String[MAX_MONEY];
         for (Integer value = 0; value < moneyString.length; value++) {
             moneyString[value] = value.toString();
@@ -154,6 +185,10 @@ public class AddWindow  extends JDialog implements ActionListener {
         gridForMoney.add(moneyComboBox);
     }
 
+    /**
+     * The createPanelForButtonsOkCancel method is private,
+     * it needs to add buttons to the add window
+     */
     private void createPanelForButtonsOkCancel() {
         gridForButtons = new JPanel(new GridLayout(1, 2, 5, 0));
         for (String buttonName : new String[]{"Ok", "Cancel"}) {
@@ -180,14 +215,16 @@ public class AddWindow  extends JDialog implements ActionListener {
         return dString;
     }
 
-
+    /**
+     * This method needs to send information about button "Ok",
+     * @return boolean This returns the button "Ok" was pressed or not.
+     */
     public boolean isPressedOk() {
         return buttonOkPressed;
     }
 
     /**
      * This is an overloaded method
-     *
      * @param ae is an object-event
      */
     @Override
